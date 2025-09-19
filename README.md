@@ -81,8 +81,8 @@ Make sure you have Python 3.8+ installed.  Then clone this
 repository and install the dependencies:
 
 ```bash
-git clone https://github.com/TarekDjaker/Early-Stopping.git
-cd Early-Stopping
+git clone https://github.com/TarekDjaker/-Furgal-AI-Early-Stopping.git
+cd -Furgal-AI-Early-Stopping
 pip install -r requirements.txt
 ```
 
@@ -103,6 +103,45 @@ to reproduce the original discrepancy principle demo.  For the new
 features, refer to the examples in the `examples/` folder.  All
 modules are documented with docstrings; simply open the source files to
 learn more about their APIs.
+
+### Running Examples
+
+The `examples/` directory contains practical demonstrations of each module:
+
+```bash
+# Proximal gradient descent for sparse regression
+python examples/example_proximal.py
+
+# Component-wise early stopping for neural networks  
+python examples/example_component.py
+
+# Fairness-aware early stopping
+python examples/example_fairness.py
+
+# Differential privacy with early stopping
+python examples/example_dp.py
+```
+
+### Quick Start
+
+```python
+# Proximal gradient descent example
+from proximal_early_stopping import ProximalEarlyStopping
+import numpy as np
+
+# Create synthetic data
+X = np.random.randn(100, 10)
+y = np.random.randn(100)
+
+# Set up solver
+solver = ProximalEarlyStopping(
+    design=X, response=y, lam=0.1, 
+    step_size=0.001, max_iter=1000
+)
+
+# Fit model
+params, iterations, objectives = solver.fit()
+```
 
 ## Contributing
 

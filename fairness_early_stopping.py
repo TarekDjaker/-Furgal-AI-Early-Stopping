@@ -19,7 +19,7 @@ false positive rate differences.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, List, Tuple, Optional
+from typing import Tuple, Optional
 
 import numpy as np
 
