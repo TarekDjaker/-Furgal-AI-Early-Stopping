@@ -1,117 +1,286 @@
-# Early Stopping Extensions for Iterative and Modern Machine‑Learning Algorithms
+# Frugal AI Early Stopping - Research Project
 
-This repository extends the original **Early‑Stopping** project with additional modules and examples based on
-recent research in machine learning and optimisation.  It preserves the
-original Landweber and L2‑boosting implementations but adds new
-capabilities for non‑convex optimisation, component‑wise stopping, fairness
-and privacy.  The goal is to provide a **clean and well documented codebase**
-that can serve as a starting point for research projects at the Master 2
-level.
+## 📚 Master 2 Internship - Université Paris 1 Panthéon-Sorbonne
 
-## What’s new?
+**Advisor**: Prof. Alain Celisse  
+**Topic**: Early Stopping Iterative Learning Algorithms - Saving Computational Resources  
+**Duration**: 4-6 months (with potential PhD continuation)
 
-The enhancements provided here are inspired by recent theoretical and
-empirical advances in the early‑stopping literature【739116097455079†L17-L35】【856229582317957†L14-L23】.  They focus on
-bridging the gap between simple linear models and the complex models
-encountered in modern deep learning, while keeping the code readable
-and educational.
+---
 
-### ✨ Proximal early stopping
+## 🎯 Project Objectives
 
-`proximal_early_stopping.py` implements a **proximal gradient
-descent** solver for composite optimisation problems of the form
+This research project focuses on developing and analyzing early stopping rules for iterative learning algorithms to reduce computational costs while maintaining optimal statistical performance. The work extends the foundational paper by **Celisse & Wahl (2021)** on the discrepancy principle for kernelized spectral filter learning algorithms.
 
-\[\min_x\; f(x) + \lambda \phi(x)\,\]
+### Key Research Questions
 
-where `f` is a differentiable (not necessarily convex) loss and `φ` is a
-convex regulariser such as the L1‑norm.  The solver includes an
-**early‑stopping mechanism** based on the decay of the primal–dual gap
-and the norm of the proximal gradient.  This module can be used to
-replicate experiments on sparse regression (lasso, SCAD, MCP) and to
-explore the theoretical ideas discussed in the thesis.
+1. **Extending to Proximal Methods**: How can the discrepancy principle be adapted to proximal gradient descent for non-smooth optimization?
+2. **Boosting Algorithms**: Can we develop principled early stopping rules for gradient boosting that achieve minimax-optimal rates?
+3. **Deep Learning Applications**: How do early stopping rules interact with implicit regularization in overparameterized models?
+4. **Frugal AI**: What computational savings can be achieved without sacrificing statistical performance?
 
-### 🧩 Component‑wise early stopping
+---
 
-`component_early_stopping.py` provides a utility class that wraps a
-PyTorch model and monitors the gradient norms of each layer.  Layers
-whose gradients fall below a user‑specified threshold are **frozen**
-(training is stopped for that layer), allowing you to save computation
-and reduce overfitting in large neural networks.  This feature is
-inspired by the GradES algorithm from 2025 but is written from
-scratch to avoid external dependencies.
+## 📁 Repository Structure
 
-### ⚖️ Fairness‑aware stopping
-
-`fairness_early_stopping.py` implements simple functions to compute
-fairness metrics (difference in error rates across sensitive groups) and
-provides an early‑stopping callback that halts training when
-improvements in fairness plateau.  It can be integrated in any
-training loop that outputs predictions, true labels and group labels.
-This module demonstrates how early stopping can be used as a tool for
-fairness, in line with recent studies on fairness dynamics【330857330321960†L29-L41】.
-
-### 🔐 Differential‑privacy friendly stopping
-
-`dp_early_stopping.py` offers a skeleton for training models under
-differential‑privacy constraints.  It implements a simple private
-gradient descent (adding Gaussian noise to gradients) and stops when
-the validation loss fails to improve.  The API returns the accumulated
-privacy budget and final model.  Although the implementation is
-lightweight, it can be extended to more sophisticated DP‑SGD
-frameworks.
-
-### 🔨 Examples
-
-Several scripts are provided in the `examples` directory to
-demonstrate how to use the new modules:
-
-* `example_proximal.py` — shows how to solve a sparse regression
-  problem with proximal gradient descent and early stopping.
-* `example_component.py` — trains a tiny multi‑layer perceptron with
-  component‑wise early stopping on a toy dataset.
-* `example_fairness.py` — demonstrates fairness‑aware stopping on a
-  synthetic binary classification task with sensitive attributes.
-
-These examples are intentionally simple so that you can adapt them to
-your own research projects.
-
-## Installation
-
-Make sure you have Python 3.8+ installed.  Then clone this
-repository and install the dependencies:
-
-```bash
-git clone https://github.com/TarekDjaker/Early-Stopping.git
-cd Early-Stopping
-pip install -r requirements.txt
+```
+Frugal_AI_Early_Stopping/
+│
+├── Articles/                 # Scientific papers (PDF)
+│   ├── Core references
+│   ├── RKHS methods
+│   ├── Optimization
+│   └── Modern applications
+│
+├── Bibliography/            # References and citations
+│   └── ESSENTIAL_PAPERS_LIST.md
+│
+├── Code/                    # Source code
+│   ├── proximal_early_stopping.py
+│   ├── component_early_stopping.py
+│   ├── fairness_early_stopping.py
+│   └── dp_early_stopping.py
+│
+├── Implementations/         # Core implementations
+│   └── rkhs_gradient_descent.py
+│
+├── Notebooks/              # Jupyter notebooks
+│   └── earlystopping_pynb.ipynb
+│
+└── download_papers.py      # Script to download papers
 ```
 
-The new modules depend on numpy, scipy, scikit‑learn and PyTorch.  If
-you do not need some of the functionality, feel free to omit the
-corresponding packages.
+---
 
-## Usage
+## 🚀 Quick Start
 
-The legacy Landweber and L2‑boosting classes are located in
-`landweber.py` and `L2_boost.py` respectively.  You can still run
+### 1. Download Essential Papers
 
 ```bash
-python example.py
+cd Frugal_AI_Early_Stopping
+python download_papers.py
 ```
 
-to reproduce the original discrepancy principle demo.  For the new
-features, refer to the examples in the `examples/` folder.  All
-modules are documented with docstrings; simply open the source files to
-learn more about their APIs.
+This will download 20+ essential papers from ArXiv to the `Articles/` directory.
 
-## Contributing
+### 2. Run RKHS Implementation
 
-Contributions are welcome!  The `todo.md` file from the original
-project lists some long‑term ideas (e.g., interactive stopping
-visualisations).  You are invited to extend the library with
-additional stopping rules, fairness metrics or privacy mechanisms.
+```python
+from Implementations.rkhs_gradient_descent import RKHSGradientDescent
+
+# Create model with Gaussian kernel
+model = RKHSGradientDescent(
+    X_train, Y_train,
+    kernel_type='gaussian',
+    kernel_width=0.2
+)
+
+# Fit with Discrepancy Principle
+result = model.fit(
+    stopping_rule='DP',
+    sigma=0.3,  # noise level
+    max_iterations=500
+)
+```
+
+### 3. Explore Notebooks
+
+Open `Notebooks/earlystopping_pynb.ipynb` to see implementations of:
+- Landweber iteration with DP/SDP stopping
+- Spectral filtering methods
+- Visualization of convergence
+
+---
+
+## 📊 Key Theoretical Results
+
+### Discrepancy Principle (Celisse & Wahl 2021)
+
+The discrepancy principle stops at iteration t* where:
+```
+||Y - K α^(t*)||_n ≤ σ
+```
+
+This achieves minimax-optimal convergence rates:
+```
+||f^(t*) - f_ρ||_ρ ≤ C_ρ,K,σ · n^(-r/(2r+1))
+```
+
+### Computational Complexity
+
+- **Traditional CV**: O(m³) for m iterations
+- **Discrepancy Principle**: O(t*·m²) where t* ≪ m
+- **Savings**: 50-90% reduction in computation time
+
+---
+
+## 🔬 Research Extensions
+
+### 1. Proximal Gradient Methods
+Extending to composite optimization:
+```
+min_x f(x) + λ·φ(x)
+```
+where f is smooth and φ is non-smooth (e.g., L1 norm).
+
+### 2. Instance-Level Stopping
+Following Yuan et al. (2025), implement per-sample stopping:
+- Detect when examples are "mastered"
+- Skip backpropagation for converged samples
+- Achieve 10-50% speedup in training
+
+### 3. Multi-Objective Stopping
+Balance multiple criteria:
+- Accuracy
+- Fairness metrics
+- Computational budget
+- Privacy constraints
+
+---
+
+## 📈 Benchmarks and Datasets
+
+### Recommended Datasets
+- **Regression**: California Housing (20,640 samples)
+- **Classification**: Adult Census (32,561 samples)
+- **Large-scale**: Covertype (581,012 samples)
+- **OpenML-CC18**: 72 curated datasets
+
+### Performance Metrics
+- Training time reduction
+- Statistical performance (MSE, accuracy)
+- Convergence analysis
+- Computational cost (FLOPs, memory)
+
+---
+
+## 🔧 Implementation Details
+
+### Core Algorithms
+
+1. **Spectral Filtering**
+   ```python
+   g_t(λ) = (1/λ) * (1 - (1 - η*λ)^t)
+   ```
+
+2. **Landweber Iteration**
+   ```python
+   α^(t+1) = α^(t) - η * K^T * (K*α^(t) - Y)
+   ```
+
+3. **Smoothed Discrepancy (SDP)**
+   ```python
+   ||L_n(Y - K*α^(t))||_n^2 ≤ σ² * N_tilde/n
+   ```
+
+### Key Features
+- Eigendecomposition for efficiency
+- Adaptive learning rates
+- Multiple kernel support (RBF, polynomial, Laplacian)
+- Comprehensive monitoring and visualization
+
+---
+
+## 📝 Publications Strategy
+
+### Target Venues
+1. **Conferences**: ICML, NeurIPS, AISTATS, COLT
+2. **Journals**: JMLR, Annals of Statistics
+3. **ArXiv**: Immediate dissemination
+
+### Timeline
+- **Months 1-2**: Literature review & method development
+- **Months 3-4**: Implementation & experiments
+- **Months 5-6**: Evaluation & paper writing
+
+---
+
+## 🔗 Essential GitHub Repositories
+
+1. **ESFIEP/EarlyStopping** - Original implementation
+2. **Bjarten/early-stopping-pytorch** - PyTorch tools
+3. **PyLops/pyproximal** - Proximal operators
+4. **scikit-learn-contrib/lightning** - Fast gradient boosting
+5. **falkonml/ruckus** - RKHS implementations
+
+---
+
+## 📖 Key References
+
+1. **Celisse & Wahl (2021)**: Analyzing the discrepancy principle for kernelized spectral filter learning algorithms. *JMLR* 22(76), 1-59.
+
+2. **Raskutti, Wainwright & Yu (2014)**: Early stopping and non-parametric regression: an optimal data-dependent stopping rule. *JMLR* 15(1), 335-366.
+
+3. **Zhang & Yu (2005)**: Boosting with Early Stopping: Convergence and Consistency. *Annals of Statistics* 33(4), 1538-1579.
+
+4. **Beck & Teboulle (2009)**: A Fast Iterative Shrinkage-Thresholding Algorithm (FISTA). *SIAM J. Imaging Sciences* 2(1), 183-202.
+
+---
+
+## 💡 Innovation Opportunities
+
+### High Impact Research Directions
+
+1. **Adaptive Layer-wise Stopping for Transformers**
+   - Extend to attention mechanisms
+   - Theoretical analysis for self-attention
+   - Publication potential: NeurIPS/ICML
+
+2. **Federated Early Stopping**
+   - Handle non-IID data
+   - Communication-efficient protocols
+   - Privacy-preserving validation
+
+3. **Causal Early Stopping**
+   - Integrate causal discovery
+   - Distribution shift robustness
+   - Novel theoretical framework
+
+---
+
+## 🛠️ Technical Stack
+
+- **Languages**: Python 3.8+
+- **Core Libraries**: NumPy, SciPy, scikit-learn
+- **Deep Learning**: PyTorch, TensorFlow
+- **Optimization**: cvxpy, proximal operators
+- **Visualization**: matplotlib, seaborn
+- **Testing**: pytest, pytest-benchmark
+
+---
+
+## 📧 Contact
+
+**Supervisor**: Prof. Alain Celisse  
+**Email**: alain.celisse@univ-paris1.fr  
+**Institution**: Laboratoire SAMM, Université Paris 1 Panthéon-Sorbonne  
+**Location**: Centre PMF, 90 Rue de Tolbiac, Paris 13
+
+---
+
+## 🏆 Expected Outcomes
+
+1. **Theoretical Contributions**
+   - Extension of discrepancy principle to new settings
+   - Convergence guarantees for proximal methods
+   - Sample complexity bounds
+
+2. **Practical Impact**
+   - 30-50% computational savings
+   - Open-source implementations
+   - Benchmark comparisons
+
+3. **Publications**
+   - 1-2 conference papers
+   - Potential journal submission
+   - ArXiv preprints
+
+---
 
 ## License
 
-This project is released under the MIT License.  See `LICENSE` for
-details.
+MIT License - See LICENSE file for details
+
+---
+
+*This research is part of the Frugal AI initiative to reduce computational costs in machine learning while maintaining optimal statistical performance.*

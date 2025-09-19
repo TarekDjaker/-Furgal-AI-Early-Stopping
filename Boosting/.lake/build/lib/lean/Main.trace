@@ -1,0 +1,24 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\lib\\lean c:\\Users\\djake\\.elan\\toolchains\\leanprover--lean4---v4.20.1\\bin\\lean.exe C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\Main.lean -R C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting -o C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\lib\\lean\\Main.olean -i C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\lib\\lean\\Main.ilean -c C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\ir\\Main.c --json",
+   "level": "trace"}],
+ "inputs":
+ [["Main:deps",
+   [["deps",
+     [["Boosting/boosting:extraDep", [["@Boosting:extraDep", "1723"]]],
+      ["import oleans",
+       [["Boosting:olean",
+         [["Boosting:deps", "10333299520419164141"],
+          ["C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\lib\\lean\\Boosting.olean",
+           "17156085444609826987"]]]]]]],
+    ["libs",
+     [["import dynlibs", "1723"],
+      ["package external libraries", "1723"],
+      ["module dynlibs", "1723"],
+      ["module plugins", "1723"]]]]],
+  ["Lean 4.20.0, commit b02228b03f655c0cd051d82280ad5758359ec8ba",
+   "309479851529972037"],
+  ["Module.leanArgs: #[]", "1723"],
+  ["C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\Main.lean",
+   "4401185901975733416"]],
+ "depHash": "13509520706119214559"}

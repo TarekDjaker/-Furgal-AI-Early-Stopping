@@ -1,0 +1,15 @@
+{"log":
+ [{"message":
+   ".> c:\\Users\\djake\\.elan\\toolchains\\leanprover--lean4---v4.20.1\\bin\\clang.exe -c -o C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\ir\\Boosting\\Basic.c.o.noexport C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\ir\\Boosting\\Basic.c -I c:\\Users\\djake\\.elan\\toolchains\\leanprover--lean4---v4.20.1\\include -fstack-clash-protection -fwrapv -Wno-unused-command-line-argument --sysroot c:\\Users\\djake\\.elan\\toolchains\\leanprover--lean4---v4.20.1 -nostdinc -isystem c:\\Users\\djake\\.elan\\toolchains\\leanprover--lean4---v4.20.1/include/clang -O3 -DNDEBUG",
+   "level": "trace"}],
+ "inputs":
+ [["Boosting.Basic:c",
+   [["C:\\Users\\djake\\OneDrive\\Desktop\\M2 Stat\\Stage M2\\Celisse\\Boosting\\.lake\\build\\ir\\Boosting\\Basic.c",
+     "4047056139553784137"],
+    ["Lean 4.20.0, commit b02228b03f655c0cd051d82280ad5758359ec8ba",
+     "309479851529972037"]]],
+  ["Lean 4.20.0, commit b02228b03f655c0cd051d82280ad5758359ec8ba",
+   "309479851529972037"],
+  ["traceArgs: #[-O3, -DNDEBUG]", "7817036117363455818"],
+  ["x86_64-w64-windows-gnu", "3894966287860160785"]],
+ "depHash": "7011616157885738070"}
