@@ -384,7 +384,7 @@ def example_usage():
     )
 
     # Plotting
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    _, axes = plt.subplots(2, 2, figsize=(12, 10))
 
     # Plot 1: Training curves
     ax = axes[0, 0]
