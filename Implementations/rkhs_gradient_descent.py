@@ -322,7 +322,8 @@ class RKHSGradientDescent:
                 print(msg)
         
         return {
-            'tau': tau,
+            'iterations': tau,
+            'stopped_at': tau,
             'train_residuals': train_residuals,
             'test_residuals': test_residuals,
             'sigma': sigma,

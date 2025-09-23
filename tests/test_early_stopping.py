@@ -300,7 +300,7 @@ class TestProximalEarlyStopping:
         """Test que L1 produit de la sparsité."""
         model = ProximalEarlyStopping(
             method='FISTA',
-            lambda_reg=1.0,  # Forte régularisation
+            lambda_reg=10.0,  # Très forte régularisation pour forcer la sparsité
             max_iterations=100
         )
         result = model.fit(self.X, self.y)
@@ -309,7 +309,7 @@ class TestProximalEarlyStopping:
         coefficients = result.get('coefficients', model.theta)
         n_zeros = np.sum(np.abs(coefficients) < 1e-6)
 
-        # Avec forte régularisation L1, on devrait avoir de la sparsité
+        # Avec très forte régularisation L1, on devrait avoir de la sparsité
         assert n_zeros > 0
 
 

@@ -24,8 +24,8 @@ from typing import Iterable, List, Tuple, Optional
 import numpy as np
 
 
-def group_error_rates(y_true: np.ndarray, y_pred: np.ndarray, sensitive_attr: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """Compute per‑group error rates for binary classification.
+def group_error_rates(y_true: np.ndarray, y_pred: np.ndarray, sensitive_attr: np.ndarray) -> Tuple[float, float]:
+    """Compute per‑group error rates for binary classification with binary sensitive attribute.
 
     Parameters
     ----------
@@ -34,35 +34,41 @@ def group_error_rates(y_true: np.ndarray, y_pred: np.ndarray, sensitive_attr: np
     y_pred : ndarray of shape (n_samples,)
         Predicted labels (0 or 1).
     sensitive_attr : ndarray of shape (n_samples,)
-        Sensitive attribute values (e.g. gender, race).
+        Binary sensitive attribute values (0 or 1).
 
     Returns
     -------
-    unique_groups : ndarray
-        The unique values in ``sensitive_attr``.
-    error_rates : ndarray
-        Error rate for each group in the same order as ``unique_groups``.
+    error_rate_0 : float
+        Error rate for group 0.
+    error_rate_1 : float
+        Error rate for group 1.
     """
-    unique_groups = np.unique(sensitive_attr)
-    error_rates = []
-    for g in unique_groups:
-        idx = sensitive_attr == g
-        if idx.sum() == 0:
-            error_rates.append(0.0)
-        else:
-            error_rates.append(np.mean(y_true[idx] != y_pred[idx]))
-    return unique_groups, np.array(error_rates)
+    # Error rate for group 0
+    idx_0 = sensitive_attr == 0
+    if idx_0.sum() == 0:
+        error_rate_0 = 0.0
+    else:
+        error_rate_0 = float(np.mean(y_true[idx_0] != y_pred[idx_0]))
+    
+    # Error rate for group 1
+    idx_1 = sensitive_attr == 1
+    if idx_1.sum() == 0:
+        error_rate_1 = 0.0
+    else:
+        error_rate_1 = float(np.mean(y_true[idx_1] != y_pred[idx_1]))
+    
+    return error_rate_0, error_rate_1
 
 
 def demographic_parity_difference(y_true: np.ndarray, y_pred: np.ndarray, sensitive_attr: np.ndarray) -> float:
     """Compute the absolute difference of error rates between most and least favoured groups.
 
     In binary classification, demographic parity difference is given by
-    ``max_g error_rate(g) − min_g error_rate(g)``.  Smaller values
+    ``|error_rate(group_0) − error_rate(group_1)|``.  Smaller values
     indicate fairer predictions.
     """
-    _, error_rates = group_error_rates(y_true, y_pred, sensitive_attr)
-    return float(np.max(error_rates) - np.min(error_rates))
+    error_rate_0, error_rate_1 = group_error_rates(y_true, y_pred, sensitive_attr)
+    return abs(error_rate_0 - error_rate_1)
 
 
 @dataclass
@@ -76,6 +82,11 @@ class FairnessEarlyStopping:
 
     Parameters
     ----------
+    fairness_threshold : float, optional
+        Threshold for fairness metric below which training is considered successful.
+        Defaults to 0.1.
+    max_iterations : int, optional
+        Maximum number of iterations to train. Defaults to 100.
     metric_fn : Callable[[np.ndarray, np.ndarray, np.ndarray], float], optional
         Function used to compute the fairness metric.  Defaults to
         ``demographic_parity_difference``.
@@ -89,6 +100,8 @@ class FairnessEarlyStopping:
         If True, prints a message when early stopping is triggered.
     """
 
+    fairness_threshold: float = 0.1
+    max_iterations: int = 100
     metric_fn: Optional[callable] = demographic_parity_difference
     patience: int = 3
     min_delta: float = 0.0
@@ -98,6 +111,52 @@ class FairnessEarlyStopping:
         self.best_metric: float = np.inf
         self.num_bad_epochs: int = 0
         self.stopped_epoch: Optional[int] = None
+        
+    def fit(self, X: np.ndarray, y: np.ndarray, sensitive_attr: np.ndarray) -> dict:
+        """Simulate training with fairness constraints.
+        
+        Parameters
+        ----------
+        X : ndarray
+            Training features.
+        y : ndarray
+            Training labels.
+        sensitive_attr : ndarray
+            Sensitive attribute values.
+            
+        Returns
+        -------
+        dict
+            Training history with iterations and fairness violations.
+        """
+        # Simulate a simple training process
+        fairness_violations = []
+        
+        for iteration in range(self.max_iterations):
+            # Simulate predictions (simple random baseline that improves over time)
+            np.random.seed(42 + iteration)
+            improvement_factor = min(0.9, iteration / self.max_iterations)
+            y_pred = np.random.binomial(1, 0.5 + 0.3 * improvement_factor * (y * 2 - 1), size=len(y))
+            
+            # Calculate fairness metric
+            fairness_metric = self.metric_fn(y, y_pred, sensitive_attr)
+            fairness_violations.append(fairness_metric)
+            
+            # Check if we should stop due to fairness threshold
+            if fairness_metric <= self.fairness_threshold:
+                if self.verbose:
+                    print(f"Fairness threshold reached at iteration {iteration}")
+                break
+                
+            # Check early stopping based on patience
+            if self.step(iteration, y, y_pred, sensitive_attr):
+                break
+                
+        return {
+            'iterations': iteration + 1,
+            'fairness_violations': fairness_violations,
+            'stopped_epoch': self.stopped_epoch
+        }
 
     def step(self, epoch: int, y_true: np.ndarray, y_pred: np.ndarray, sensitive_attr: np.ndarray) -> bool:
         """Update the metric and decide whether to stop.
