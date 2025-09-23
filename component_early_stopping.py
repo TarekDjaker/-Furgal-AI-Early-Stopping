@@ -25,7 +25,7 @@ feature.
 from __future__ import annotations
 
 import torch
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Set
 
 
 class ComponentEarlyStopping:
@@ -43,10 +43,16 @@ class ComponentEarlyStopping:
     """
 
     def __init__(self, model: torch.nn.Module, threshold: float = 1e-3, verbose: bool = False) -> None:
+        if not isinstance(model, torch.nn.Module):
+            raise TypeError(f"Expected torch.nn.Module, got {type(model)}")
+        if threshold <= 0:
+            raise ValueError(f"Threshold must be positive, got {threshold}")
+
         self.model = model
         self.threshold = threshold
         self.verbose = verbose
-        self.frozen_params: List[str] = []
+        self.frozen_params: Set[str] = set()  # Use set for O(1) lookups
+        self.grad_history: Dict[str, List[float]] = {}  # Track gradient history
 
     def apply(self) -> List[str]:
         """Inspect gradients and freeze parameters that have converged.
@@ -63,30 +69,64 @@ class ComponentEarlyStopping:
             A list of parameter names that were frozen at this call.
         """
         newly_frozen: List[str] = []
-        for name, param in self.model.named_parameters():
-            if not param.requires_grad:
-                continue  # Already frozen
-            if param.grad is None:
-                continue  # No gradient yet
-            grad_norm = param.grad.norm().item()
+
+        # Pre-compute parameters once
+        active_params = [(name, param) for name, param in self.model.named_parameters()
+                        if param.requires_grad and param.grad is not None]
+
+        for name, param in active_params:
+            # Use more efficient norm computation
+            grad_norm = param.grad.data.norm(2).item()
+
+            # Track gradient history for analysis
+            if name not in self.grad_history:
+                self.grad_history[name] = []
+            self.grad_history[name].append(grad_norm)
+
             if grad_norm < self.threshold:
                 param.requires_grad_(False)
-                self.frozen_params.append(name)
+                self.frozen_params.add(name)
                 newly_frozen.append(name)
                 if self.verbose:
                     print(f"ComponentEarlyStopping: froze {name} with gradient norm {grad_norm:.2e}")
+
         return newly_frozen
 
     def reset(self) -> None:
         """Reset all frozen parameters to be trainable again."""
+        # Only reset parameters we actually froze
         for name, param in self.model.named_parameters():
-            if not param.requires_grad:
+            if name in self.frozen_params:
                 param.requires_grad_(True)
         self.frozen_params.clear()
+        self.grad_history.clear()
 
     def summary(self) -> List[str]:
         """Return a list of all frozen parameter names."""
         return list(self.frozen_params)
+
+    def get_gradient_statistics(self) -> Dict[str, Dict[str, float]]:
+        """Get statistics about gradient norms for each parameter.
+
+        Returns
+        -------
+        Dict[str, Dict[str, float]]
+            Statistics including mean, std, min, max for each parameter.
+        """
+        import numpy as np
+
+        stats = {}
+        for name, history in self.grad_history.items():
+            if history:
+                stats[name] = {
+                    'mean': np.mean(history),
+                    'std': np.std(history),
+                    'min': np.min(history),
+                    'max': np.max(history),
+                    'last': history[-1],
+                    'is_frozen': name in self.frozen_params
+                }
+        return stats
 
 
 __all__ = ["ComponentEarlyStopping"]
