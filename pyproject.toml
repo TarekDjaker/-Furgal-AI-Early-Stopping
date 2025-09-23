@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "furgal-ai-early-stopping"
+version = "0.1.0"
+authors = [
+    {name = "TarekDjaker"},
+]
+description = "Early Stopping Extensions for Iterative and Modern Machine Learning Algorithms"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["machine-learning", "early-stopping", "optimization", "fairness", "privacy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research", 
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10", 
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "numpy>=1.21",
+    "scipy>=1.7", 
+    "scikit-learn>=1.0",
+]
+
+[project.optional-dependencies]
+torch = ["torch>=2.0"]
+examples = ["matplotlib"]
+dev = [
+    "pytest",
+    "flake8", 
+    "matplotlib",
+]
+
+[project.urls]
+Homepage = "https://github.com/TarekDjaker/-Furgal-AI-Early-Stopping"
+Documentation = "https://github.com/TarekDjaker/-Furgal-AI-Early-Stopping#readme"
+Repository = "https://github.com/TarekDjaker/-Furgal-AI-Early-Stopping"
+Issues = "https://github.com/TarekDjaker/-Furgal-AI-Early-Stopping/issues"
+
+[tool.setuptools]
+py-modules = [
+    "proximal_early_stopping",
+    "component_early_stopping",
+    "fairness_early_stopping", 
+    "dp_early_stopping",
+]
+
+[tool.flake8]
+max-line-length = 127
+max-complexity = 10
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
