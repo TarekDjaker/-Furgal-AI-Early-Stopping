@@ -15,7 +15,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from rkhs_gradient_descent import RKHSGradientDescent
+from Implementations.rkhs_gradient_descent import RKHSGradientDescent
 from dp_early_stopping import DPSGDEarlyStopping
 from proximal_early_stopping import ProximalEarlyStopping
 from component_early_stopping import ComponentEarlyStopping

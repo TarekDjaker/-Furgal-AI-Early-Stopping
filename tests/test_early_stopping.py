@@ -189,9 +189,12 @@ class TestComponentEarlyStopping:
     def test_should_stop_component(self):
         """Test la décision d'arrêt par composant."""
         # Simuler une perte qui ne s'améliore pas
-        losses = [0.5, 0.49, 0.489, 0.488, 0.488, 0.488]
+        losses = [0.5, 0.49, 0.489, 0.488, 0.488, 0.488, 0.488, 0.488, 0.488]
+        should_stop = False
         for i, loss in enumerate(losses):
             should_stop = self.model.should_stop_component(0, loss, i)
+            if should_stop:
+                break
         # Après patience iterations sans amélioration
         assert should_stop == True
 

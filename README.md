@@ -35,17 +35,29 @@ Frugal_AI_Early_Stopping/
 ├── Bibliography/            # References and citations
 │   └── ESSENTIAL_PAPERS_LIST.md
 │
-├── Code/                    # Source code
-│   ├── proximal_early_stopping.py
-│   ├── component_early_stopping.py
-│   ├── fairness_early_stopping.py
-│   └── dp_early_stopping.py
-│
 ├── Implementations/         # Core implementations
 │   └── rkhs_gradient_descent.py
 │
 ├── Notebooks/              # Jupyter notebooks
 │   └── earlystopping_pynb.ipynb
+│
+├── benchmarks/             # Performance benchmarks
+│   └── performance_benchmarks.py
+│
+├── experiments/            # Experiment runners
+│   └── run_experiments.py
+│
+├── tests/                  # Unit tests
+│   └── test_early_stopping.py
+│
+├── visualizations/         # Plotting and visualization tools
+│   └── advanced_plots.py
+│
+├── Early stopping modules (root level):
+│   ├── proximal_early_stopping.py
+│   ├── component_early_stopping.py
+│   ├── fairness_early_stopping.py
+│   └── dp_early_stopping.py
 │
 └── download_papers.py      # Script to download papers
 ```
