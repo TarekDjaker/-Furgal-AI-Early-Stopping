@@ -19,7 +19,7 @@ false positive rate differences.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, List, Tuple, Optional, Dict, Any
+from typing import Callable, List, Tuple, Optional
 
 import numpy as np
 
@@ -98,8 +98,8 @@ def demographic_parity_difference(
         weights = np.array(weights) / np.sum(weights)
         weighted_mean = np.sum(error_rates * weights)
         return float(np.sum(weights * np.abs(error_rates - weighted_mean)))
-    else:
-        return float(np.max(error_rates) - np.min(error_rates))
+
+    return float(np.max(error_rates) - np.min(error_rates))
 
 
 @dataclass
@@ -141,7 +141,8 @@ class FairnessEarlyStopping:
         self.metric_history: List[float] = []
         self.improvement_history: List[bool] = []
 
-    def step(self, epoch: int, y_true: np.ndarray, y_pred: np.ndarray, sensitive_attr: np.ndarray) -> bool:
+    def step(self, epoch: int, y_true: np.ndarray, y_pred: np.ndarray,
+             sensitive_attr: np.ndarray) -> bool:
         """Update the metric and decide whether to stop.
 
         Parameters
@@ -187,10 +188,15 @@ class FairnessEarlyStopping:
         if should_stop:
             self.stopped_epoch = epoch
             if self.verbose:
-                improvement_rate = sum(self.improvement_history[-10:]) / min(10, len(self.improvement_history))
+                improvement_rate = (
+                    sum(self.improvement_history[-10:])
+                    / min(10, len(self.improvement_history))
+                )
                 print(
-                    f"FairnessEarlyStopping: stopped at epoch {epoch} with metric {metric_value:.4f}, "
-                    f"best: {self.best_metric:.4f}, recent improvement rate: {improvement_rate:.2%}"
+                    f"FairnessEarlyStopping: stopped at epoch {epoch} "
+                    f"with metric {metric_value:.4f}, "
+                    f"best: {self.best_metric:.4f}, recent improvement "
+                    f"rate: {improvement_rate:.2%}"
                 )
 
         return should_stop

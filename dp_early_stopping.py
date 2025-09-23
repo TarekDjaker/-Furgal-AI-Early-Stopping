@@ -165,7 +165,10 @@ class DPSGDEarlyStopping:
             'grad_norm_history': grad_norm_history,
             'privacy_history': privacy_history,
             'best_val_loss': best_val,
-            'convergence_rate': np.mean(np.diff(val_history[:min(10, len(val_history))])) if len(val_history) > 1 else 0.0
+            'convergence_rate': (
+                np.mean(np.diff(val_history[:min(10, len(val_history))]))
+                if len(val_history) > 1 else 0.0
+            )
         }
 
         return best_params, stop_iter, total_eps, val_history, stats

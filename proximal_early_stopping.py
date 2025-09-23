@@ -70,7 +70,9 @@ def l2_proximal(x: np.ndarray, threshold: float) -> np.ndarray:
     return x * (1 - threshold / norm_x)
 
 
-def elastic_net_proximal(x: np.ndarray, l1_weight: float, l2_weight: float, step_size: float) -> np.ndarray:
+def elastic_net_proximal(
+    x: np.ndarray, l1_weight: float, l2_weight: float, step_size: float
+) -> np.ndarray:
     """Apply the proximal operator for elastic net regularization.
 
     Combines L1 and L2 penalties: l1_weight * ||x||₁ + l2_weight * ||x||₂²
@@ -134,7 +136,10 @@ class ProximalEarlyStopping:
         if len(self.response.shape) != 1:
             raise ValueError(f"Response must be 1D, got shape {self.response.shape}")
         if self.design.shape[0] != self.response.shape[0]:
-            raise ValueError(f"Design and response size mismatch: {self.design.shape[0]} vs {self.response.shape[0]}")
+            raise ValueError(
+                f"Design and response size mismatch: "
+                f"{self.design.shape[0]} vs {self.response.shape[0]}"
+            )
 
         self.n_samples, self.n_features = self.design.shape
         self.x = np.zeros(self.n_features)
@@ -150,14 +155,20 @@ class ProximalEarlyStopping:
         self.lipschitz = np.linalg.norm(self.AtA, 2)
         if self.step_size > 2.0 / self.lipschitz:
             import warnings
-            warnings.warn(f"Step size {self.step_size} may be too large. Recommended: {1.0/self.lipschitz:.4f}")
+
+            warnings.warn(
+                f"Step size {self.step_size} may be too large. "
+                f"Recommended: {1.0/self.lipschitz:.4f}"
+            )
 
     def _objective(self, x: np.ndarray) -> float:
         """Compute the objective value 0.5||Ax − y||² + λ·||x||₁."""
         residual = self.design @ x - self.response
         return 0.5 * np.dot(residual, residual) + self.lam * np.sum(np.abs(x))
 
-    def fit(self, use_acceleration: bool = True) -> Tuple[np.ndarray, int, List[float], Dict[str, Any]]:
+    def fit(
+        self, use_acceleration: bool = True
+    ) -> Tuple[np.ndarray, int, List[float], Dict[str, Any]]:
         """Run proximal gradient descent until the stopping criterion triggers.
 
         Returns
@@ -225,7 +236,9 @@ class ProximalEarlyStopping:
 
             # Also check objective decrease
             if len(self.obj_values) > 1:
-                obj_decrease = abs(self.obj_values[-2] - self.obj_values[-1]) / (abs(self.obj_values[-2]) + 1e-12)
+                obj_decrease = abs(self.obj_values[-2] - self.obj_values[-1]) / (
+                    abs(self.obj_values[-2]) + 1e-12
+                )
             else:
                 obj_decrease = 1.0
 
@@ -241,11 +254,13 @@ class ProximalEarlyStopping:
 
         # Compile statistics
         stats = {
-            'final_sparsity': sparsity,
-            'convergence_rate': np.mean(np.diff(self.obj_values[-10:])) if len(self.obj_values) > 1 else 0.0,
-            'final_gradient_norm': np.linalg.norm(grad),
-            'iterations': iteration + 1,
-            'sparsity_pattern': np.where(np.abs(self.x) > 1e-10)[0].tolist()
+            "final_sparsity": sparsity,
+            "convergence_rate": (
+                np.mean(np.diff(self.obj_values[-10:])) if len(self.obj_values) > 1 else 0.0
+            ),
+            "final_gradient_norm": np.linalg.norm(grad),
+            "iterations": iteration + 1,
+            "sparsity_pattern": np.where(np.abs(self.x) > 1e-10)[0].tolist(),
         }
 
         return self.x, iteration, self.obj_values, stats

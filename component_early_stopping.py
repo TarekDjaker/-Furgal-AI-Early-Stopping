@@ -24,8 +24,8 @@ feature.
 
 from __future__ import annotations
 
+from typing import List, Dict, Set
 import torch
-from typing import List, Tuple, Dict, Set
 
 
 class ComponentEarlyStopping:
@@ -42,7 +42,8 @@ class ComponentEarlyStopping:
         If True, prints a message whenever a parameter is frozen.
     """
 
-    def __init__(self, model: torch.nn.Module, threshold: float = 1e-3, verbose: bool = False) -> None:
+    def __init__(self, model: torch.nn.Module, threshold: float = 1e-3,
+                 verbose: bool = False) -> None:
         if not isinstance(model, torch.nn.Module):
             raise TypeError(f"Expected torch.nn.Module, got {type(model)}")
         if threshold <= 0:
@@ -71,8 +72,10 @@ class ComponentEarlyStopping:
         newly_frozen: List[str] = []
 
         # Pre-compute parameters once
-        active_params = [(name, param) for name, param in self.model.named_parameters()
-                        if param.requires_grad and param.grad is not None]
+        active_params = [
+            (name, param) for name, param in self.model.named_parameters()
+            if param.requires_grad and param.grad is not None
+        ]
 
         for name, param in active_params:
             # Use more efficient norm computation
@@ -88,7 +91,8 @@ class ComponentEarlyStopping:
                 self.frozen_params.add(name)
                 newly_frozen.append(name)
                 if self.verbose:
-                    print(f"ComponentEarlyStopping: froze {name} with gradient norm {grad_norm:.2e}")
+                    print(f"ComponentEarlyStopping: froze {name} with "
+                          f"gradient norm {grad_norm:.2e}")
 
         return newly_frozen
 
